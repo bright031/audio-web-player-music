@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="img/AUDIORA-fotor-20250217154545.ico">
+    <title>Audiora - Web Player Music</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@48,400,1,0" />
+</head>
+<body>
+    <!-- Overlay đăng nhập/đăng ký -->
+    <div id="overlay">
+        <div id="auth-container">
+            <div id="login-form">
+                <h2>Đăng nhập</h2>
+                <input type="text" id="login-username" placeholder="Tên người dùng">
+                <input type="password" id="login-password" placeholder="Mật khẩu">
+                <button onclick="login()">Đăng nhập</button>
+                <button onclick="toggleForm('register')">Đăng ký</button>
+            </div>
+            <div id="register-form" style="display: none;">
+                <h2>Đăng ký</h2>
+                <input type="text" id="reg-username" placeholder="Tên người dùng">
+                <input type="email" id="reg-email" placeholder="Email">
+                <input type="password" id="reg-password" placeholder="Mật khẩu">
+                <button onclick="register()">Đăng ký</button>
+                <button onclick="toggleForm('login')">Đăng nhập</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- App container -->
+    <div id="app" class="content-locked">
+        <header>
+            <div class="logo">
+                <img src="img/logo (2).png" alt="Audiora Logo">
+            </div>
+            <div class="search">
+                <input type="text" placeholder="Bạn muốn nghe gì hôm nay?">
+            </div>
+            <div class="nav-links">
+                <a href="#" onclick="loadSection('home')">Trang chủ</a>
+                <a href="#" onclick="loadSection('intro')">Giới thiệu</a>
+                <a href="#" onclick="loadSection('contact')">Liên hệ</a>
+                <a href="#" onclick="loadSection('favorites')">Yêu thích</a>
+            </div>
+            <button id="logout-btn" onclick="logout()">Đăng xuất</button>
+        </header>
+
+        <!-- Main content -->
+        <main id="main-content">
+            <!-- Nội dung sẽ được load động bằng JS -->
+        </main>
+  
+        <!-- Music Player -->
+        <section class="music-player hidden">
+            <audio id="audio-player" controls style="display: none;">
+                <source src="songs/ĐIỀU PHI THƯỜNG NHỎ BÉ - Ngọc Linh x Hoàng Thùy Linh x Chi Pu & Đen Vâu  Sáng tác_ DTAP.mp3" type="audio/mp3">
+            </audio>
+            <div class="player-info">
+                <img id="album-cover" src="./img/dieuphithuongnhobe.png" alt="Album Cover">
+                <div class="track-info">
+                    <h3 id="song-name">Điều phi thường nhỏ bé</h3>
+                    <p id="artist-name">Ngọc Linh x Hoàng Thùy Linh x Chi Pu & Đen Vâu</p>
+                </div>
+            </div>
+            <div class="player-controls">
+                <button class="prev"><i class="fa-solid fa-backward"></i></button>
+                <button class="play"><i class="fa-solid fa-play"></i></button>
+                <button class="next"><i class="fa-solid fa-forward"></i></button>
+                <button class="shuffle"><i class="fa-solid fa-shuffle"></i></button>
+                <button class="show-playlist">Danh sách</button>
+                <button class="fav-btn" id="music-player-fav-btn">
+                    <i class="fa fa-heart-o"></i>
+                </button>
+            </div>
+            <div class="progress-bar">
+                <span id="current-time">0:00</span>
+                <input type="range" id="progress" value="0" max="100">
+                <span id="total-time">0:00</span>
+            </div>
+        </section>
+
+        <!-- Chatbot -->
+        <button class="chatbot-toggler">
+            <span class="material-symbols-rounded">mode_comment</span>
+            <span class="material-symbols-outlined">close</span>
+        </button>
+        <div class="chatbot">
+            <header>
+                <h2>&nbspChatbot</h2>
+                <span class="close-btn material-symbols-outlined">Đóng</span>
+            </header>
+            <ul class="chatbox">
+                <li class="chat incoming">
+                    <span class="material-symbols-outlined">smart_toy</span>
+                    <p>Xin chào! <br>Tôi có thể giúp gì cho bạn?</p>
+                </li>
+            </ul>
+            <div class="chat-input">
+                <textarea placeholder="Nhập tin nhắn....." spellcheck="false" required></textarea>
+                <span id="send-btn" class="material-symbols-rounded">Gửi</span>
+            </div>
+        </div>
+       
+        <footer>
+            <h1>Đối tác âm nhạc</h1>
+    
+            <div class="partners-container">
+                <!-- Row 1 -->
+                <div class="partner-card">
+                    <img src="img/doitac1.png" alt="" class="partner-logo">
+                </div>
+                <div class="partner-card">
+                    <img src="img/doitac2.png" alt="" class="partner-logo">
+                </div>
+                <div class="partner-card">
+                    <img src="img/doitac3.png" alt="" class="partner-logo">
+                </div>
+                <div class="partner-card">
+                    <img src="img/doitac4.png" alt="" class="partner-logo">
+                </div>
+                <div class="partner-card">
+                    <img src="img/doitac5.png" alt="" class="partner-logo">
+                </div>
+                <div class="partner-card">
+                    <img src="img/doitac6.png" alt="" class="partner-logo">
+                </div>
+                <div class="partner-card">
+                    <img src="img/doitac7.png" alt="" class="partner-logo">
+                </div>
+                <div class="partner-card">
+                    <img src="img/doitac8.png" alt="" class="partner-logo">
+                </div>
+
+                <div class="partner-card">
+                    <img src="img/doitac9.png" alt="" class="partner-logo">
+                </div>
+                <div class="partner-card">
+                    <img src="img/doitac10.png" alt="" class="partner-logo">
+                </div>
+                <div class="partner-card">
+                    <img src="img/doitac11.png" alt="" class="partner-logo">
+                </div>
+                <div class="partner-card">
+                    <img src="img/doitac12.png" alt="" class="partner-logo">
+                </div>
+       
+      
+            </div>
+            <p>&copy; 2025 Audiora - Web Player Music. All rights reserved.</p>
+        </footer>
+     
+    </div>
+ 
+    
+    <!-- Scripts -->
+    <script src="app.js"></script>
+    <script src="dtplaylist.js"></script>
+    <script src="dtalbum.js"></script>
+    <script src="dtsongs.js"></script>
+    <script src="chatbot.js"></script>
+    <script>
+        const BACKEND_URL = 'http://localhost:27016';
+    
+        // Quản lý danh sách yêu thích
+        let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+        const MAX_FAVORITES = 12; // Giới hạn tối đa 12 bài
+        let currentSong = null; // Lưu bài hát hiện tại trong music player
+    
+        function addToFavorites(song) {
+            if (favorites.length >= MAX_FAVORITES) {
+                alert(`Danh sách yêu thích đã đạt tối đa ${MAX_FAVORITES} bài! Hãy xóa bớt để thêm bài mới.`);
+                return;
+            }
+            if (!favorites.find(fav => fav.src === song.src)) {
+                favorites.push(song);
+                localStorage.setItem('favorites', JSON.stringify(favorites));
+                alert(`${song.name} đã được thêm vào danh sách yêu thích!`);
+                updateFavoriteButtons(song); // Cập nhật trạng thái nút trái tim
+            } else {
+                alert(`${song.name} đã có trong danh sách yêu thích!`);
+            }
+        }
+    
+        function removeFromFavorites(song) {
+            favorites = favorites.filter(fav => fav.src !== song.src);
+            localStorage.setItem('favorites', JSON.stringify(favorites));
+            alert(`${song.name} đã được xóa khỏi danh sách yêu thích!`);
+            updateFavoriteButtons(song); // Cập nhật trạng thái nút trái tim
+            loadSection('favorites'); // Cập nhật giao diện Favorites
+        }
+    
+        function clearFavorites() {
+            favorites = [];
+            localStorage.setItem('favorites', JSON.stringify(favorites));
+            alert('Đã làm mới danh sách yêu thích!');
+            updateAllFavoriteButtons(); // Cập nhật trạng thái tất cả nút trái tim
+            loadSection('favorites'); // Cập nhật giao diện Favorites
+        }
+    
+        function toggleFavorite(song, button) {
+            if (favorites.find(fav => fav.src === song.src)) {
+                removeFromFavorites(song);
+                button.classList.remove('favorited');
+                button.innerHTML = '<i class="fa fa-heart-o"></i>';
+            } else {
+                addToFavorites(song);
+                button.classList.add('favorited');
+                button.innerHTML = '<i class="fa fa-heart"></i>';
+            }
+        }
+    
+        // Cập nhật trạng thái nút trái tim cho một bài hát
+        function updateFavoriteButtons(song) {
+            document.querySelectorAll(`.fav-btn[data-src="${song.src}"]`).forEach(button => {
+                if (favorites.find(fav => fav.src === song.src)) {
+                    button.classList.add('favorited');
+                    button.innerHTML = '<i class="fa fa-heart"></i>';
+                } else {
+                    button.classList.remove('favorited');
+                    button.innerHTML = '<i class="fa fa-heart-o"></i>';
+                }
+            });
+        }
+    
+        // Cập nhật trạng thái tất cả nút trái tim
+        function updateAllFavoriteButtons() {
+            document.querySelectorAll('.fav-btn').forEach(button => {
+                const songSrc = button.getAttribute('data-src');
+                if (favorites.find(fav => fav.src === songSrc)) {
+                    button.classList.add('favorited');
+                    button.innerHTML = '<i class="fa fa-heart"></i>';
+                } else {
+                    button.classList.remove('favorited');
+                    button.innerHTML = '<i class="fa fa-heart-o"></i>';
+                }
+            });
+        }
+    
+        function toggleForm(form) {
+            document.getElementById('login-form').style.display = form === 'login' ? 'block' : 'none';
+            document.getElementById('register-form').style.display = form === 'register' ? 'block' : 'none';
+        }
+    
+        async function register() {
+            const username = document.getElementById('reg-username').value;
+            const email = document.getElementById('reg-email').value;
+            const password = document.getElementById('reg-password').value;
+            if (!email.match(/^\S+@\S+\.\S+$/)) {
+                alert('Email không hợp lệ!');
+                return;
+            }
+            try {
+                const response = await fetch(`${BACKEND_URL}/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, email, password })
+                });
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`HTTP error! Status: ${response.status}, ${errorText}`);
+                }
+                const data = await response.json();
+                alert(data.message);
+                if (response.ok) toggleForm('login');
+            } catch (error) {
+                console.error('Register error:', error);
+                alert('Lỗi: ' + error.message);
+            }
+        }
+    
+        async function login() {
+            const username = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
+            try {
+                const response = await fetch(`${BACKEND_URL}/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`HTTP error! Status: ${response.status}, ${errorText}`);
+                }
+                const data = await response.json();
+                if (response.ok) {
+                    localStorage.setItem('token', data.token);
+                    document.getElementById('overlay').style.display = 'none';
+                    document.getElementById('app').classList.remove('content-locked');
+                    alert(data.message);
+                    loadSection('home');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                alert('Lỗi: ' + error.message);
+            }
+        }
+    
+        function logout() {
+            const audioPlayer = document.getElementById('audio-player');
+            const playButton = document.querySelector('.play i');
+            if (audioPlayer) {
+                audioPlayer.pause();
+                audioPlayer.currentTime = 0;
+                if (playButton) playButton.classList.replace('fa-pause', 'fa-play');
+                document.querySelector('.music-player').classList.remove('visible');
+            }
+            document.body.classList.remove('show-chatbot');
+            localStorage.removeItem('token');
+            localStorage.removeItem('favorites'); // Xóa danh sách yêu thích khi đăng xuất
+            favorites = [];
+            updateAllFavoriteButtons();
+            document.getElementById('overlay').style.display = 'flex';
+            document.getElementById('app').classList.add('content-locked');
+            toggleForm('login');
+        }
+    
+        function loadSection(section) {
+            const mainContent = document.getElementById('main-content');
+            const sections = {
+                'home': 'home-section',
+                'intro': 'intro-section',
+                'contact': 'contact-section',
+                'favorites': 'favorites-section'
+            };
+    
+            const allSections = mainContent.querySelectorAll('section');
+            allSections.forEach(sec => sec.style.display = 'none');
+    
+            let targetSection = document.getElementById(sections[section]);
+            if (!targetSection) {
+                targetSection = document.createElement('section');
+                targetSection.id = sections[section];
+                mainContent.appendChild(targetSection);
+            }
+    
+            switch (section) {
+                case 'home':
+                    targetSection.className = 'home';
+                    targetSection.innerHTML = `
+                        <section class="playlist">
+                            <div class="playlist-label">Playlist</div>
+                            <div class="playlist-container">
+                                <div class="playlist-item" onclick="loadPlaylistDetails('WeChoice 2024 & 2023')">
+                                    <img src="./img/wechoice2023.jpg" alt="Playlist Cover">
+                                    <div class="playlist-info">
+                                        <h3>WeChoice 2024 & 2023</h3>
+                                        <p>Những ca khúc nổi bật</p>
+                                    </div>
+                                </div>
+                                <div class="playlist-item" onclick="loadPlaylistDetails('Dương Domic Radio')">
+                                    <img src="./img/radio.png" alt="Playlist Cover">
+                                    <div class="playlist-info">
+                                        <h3>Dương Domic Radio</h3>
+                                        <p>Với ANH TRAI "SAY HI", HIEUTHUHAI, Quang Trung và nhiều hơn nữa</p>
+                                    </div>
+                                </div>
+                                <div class="playlist-item" onclick="loadPlaylistDetails('Bài hát hàng đầu Việt Nam')">
+                                    <img src="./img/nghegi.png" alt="Playlist Cover">
+                                    <div class="playlist-info">
+                                        <h3>Bài hát hàng đầu Việt Nam</h3>
+                                        <p>Thông tin cập nhật hằng tuần về những bản nhạc được nghe nhiều nhất hiện nay tại Việt Nam.</p>
+                                    </div>
+                                </div>
+                                <div class="playlist-item" onclick="loadPlaylistDetails('Dòng chảy rap Việt')">
+                                    <img src="./img/hiphopvn.png" alt="Playlist Cover">
+                                    <div class="playlist-info">
+                                        <h3>Dòng chảy rap Việt</h3>
+                                    </div>
+                                </div>
+                                <div class="playlist-item" onclick="loadPlaylistDetails('Va vào những giai điệu cực chill')">
+                                    <img src="./img/songs.png" alt="Playlist Cover">
+                                    <div class="playlist-info">
+                                        <h3>Va vào những giai điệu cực chill</h3>
+                                    </div>
+                                </div>
+                                <div class="playlist-item" onclick="loadPlaylistDetails('Dòng chảy của những giai điệu')">
+                                    <img src="./img/songschill.png" alt="Playlist Cover">
+                                    <div class="playlist-info">
+                                        <h3>Dòng chảy của những giai điệu</h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                        <section class="album">
+                            <div class="album-label">Album</div>
+                            <div class="album-container">
+                                <div class="album-item" onclick="loadAlbumDetails('ACPBĐTĐĐ')">
+                                    <img src="./img/ht2_album.png" alt="Album Cover">
+                                    <div class="album-info">
+                                        <h3>ACPBĐTĐĐ</h3>
+                                        <p>HIEUTHUHAI</p>
+                                    </div>
+                                </div>
+                                <div class="album-item" onclick="loadAlbumDetails('Dữ Liệu Quý')">
+                                    <img src="./img/album_duongdomic.png" alt="Album Cover">
+                                    <div class="album-info">
+                                        <h3>Dữ Liệu Quý</h3>
+                                        <p>Dương Domic</p>
+                                    </div>
+                                </div>
+                                <div class="album-item" onclick="loadAlbumDetails('ái')">
+                                    <img src="./img/tlinh_album.png" alt="Album Cover">
+                                    <div class="album-info">
+                                        <h3>ái</h3>
+                                        <p>tlinh</p>
+                                    </div>
+                                </div>
+                                <div class="album-item" onclick="loadAlbumDetails('Bật nó lên')">
+                                    <img src="./img/soobin_album.png" alt="Album Cover">
+                                    <div class="album-info">
+                                        <h3>Bật nó lên</h3>
+                                        <p>SOOBIN Hoàng Sơn</p>
+                                    </div>
+                                </div>
+                                <div class="album-item" onclick="loadAlbumDetails('LINK')">
+                                    <img src="./img/HTL_album.png" alt="Album Cover">
+                                    <div class="album-info">
+                                        <h3>LINK</h3>
+                                        <p>Hoàng Thùy Linh</p>
+                                    </div>
+                                </div>
+                                <div class="album-item" onclick="loadAlbumDetails('THE WXRDIES')">
+                                    <img src="./img/wxrdies_album.png" alt="Album Cover">
+                                    <div class="album-info">
+                                        <h3>THE WXRDIES</h3>
+                                        <p>Wxrdie</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                        <section class="idol">
+                            <div class="idol-label">Nghệ sĩ</div>
+                            <div class="idol-container">
+                                <div class="idol-item" onclick="loadArtistDetails('tlinh')">
+                                    <img src="img/tlinh.jpg" alt="Cover">
+                                    <div class="idol-info">tlinh</div>
+                                    <div class="play-btn"><i class="fa fa-play"></i></div>
+                                </div>
+                                <div class="idol-item" onclick="loadArtistDetails('HIEUTHUHAI')">
+                                    <img src="img/HIEUTHUHAI.jpg" alt="Cover">
+                                    <div class="idol-info">HIEUTHUHAI</div>
+                                    <div class="play-btn"><i class="fa fa-play"></i></div>
+                                </div>
+                                <div class="idol-item" onclick="loadArtistDetails('NEGAV')">
+                                    <img src="img/negav.jpg" alt="Cover">
+                                    <div class="idol-info">NEGAV</div>
+                                    <div class="play-btn"><i class="fa fa-play"></i></div>
+                                </div>
+                                <div class="idol-item" onclick="loadArtistDetails('Sơn Tùng M-TP')">
+                                    <img src="img/sontung.jpg" alt="Cover">
+                                    <div class="idol-info">Sơn Tùng M-TP</div>
+                                    <div class="play-btn"><i class="fa fa-play"></i></div>
+                                </div>
+                                <div class="idol-item" onclick="loadArtistDetails('Soobin Hoàng Sơn')">
+                                    <img src="img/soobinhs.jpg" alt="Cover">
+                                    <div class="idol-info">Soobin Hoàng Sơn</div>
+                                    <div class="play-btn"><i class="fa fa-play"></i></div>
+                                </div>
+                                <div class="idol-item" onclick="loadArtistDetails('Hoàng Thùy Linh')">
+                                    <img src="img/hoang-thuy-linh.jpg" alt="Cover">
+                                    <div class="idol-info">Hoàng Thùy Linh</div>
+                                    <div class="play-btn"><i class="fa fa-play"></i></div>
+                                </div>
+                            </div>
+                        </section>
+                        <div class="suggestions-container">
+                            <div class="header1">
+                                <h2>Gợi ý</h2>
+                                <button class="refresh" onclick="loadSongs()"> <i class="fa-solid fa-rotate-right"></i></button>
+                            </div>
+                            <div class="suggestions-grid" id="suggestions-grid"></div>
+                        </div>
+                    `;
+                    try {
+                        loadSongs();
+                    } catch (error) {
+                        console.error('Lỗi trong loadSongs:', error);
+                    }
+                    break;
+    
+                case 'intro':
+                    targetSection.className = 'intro';
+                    targetSection.innerHTML = `
+                        <h2 style="color: #007BFF;">Giới thiệu</h2>
+                        <p>Audiora là nền tảng nghe nhạc trực tuyến được thiết kế để mang đến trải nghiệm âm nhạc tuyệt vời nhất cho người dùng Việt Nam. Chúng tôi tự hào cung cấp các playlist chọn lọc như "WeChoice 2024 & 2023", "Dòng chảy rap Việt", cùng với các album nổi bật từ những nghệ sĩ hàng đầu như Sơn Tùng M-TP, Hoàng Thùy Linh, HIEUTHUHAI, tlinh và nhiều người khác.</p>
+                        <p>Với giao diện thân thiện, chatbot thông minh hỗ trợ tìm kiếm và phát nhạc, Audiora không chỉ là nơi thưởng thức âm nhạc mà còn là cộng đồng để bạn khám phá và chia sẻ đam mê âm nhạc.</p>
+                    `;
+                    break;
+    
+                case 'contact':
+                    targetSection.className = 'contact';
+                    targetSection.innerHTML = `
+                        <h2 style="color: #007BFF;">Liên hệ</h2>
+                        <p>Có bài hát muốn thêm hoặc góp ý? Liên hệ với chúng tôi qua:</p>
+                        <ul>
+                            <li>Email: support@audiora.com</li>
+                            <li>Hotline: 070-2922-556</li>
+                            <li>Địa chỉ: Nguyễn Văn Cừ, Quận Ninh Kiều, TP. Cần Thơ</li>
+                        </ul>
+                        <form id="contact-form">
+                            <input type="text" id="fullName" name="fullName" placeholder="Họ và tên" required>
+                            <input type="text" id="songRequest" name="songRequest" placeholder="Bài hát muốn thêm" required>
+                            <textarea id="message" name="message" placeholder="Tin nhắn của bạn" rows="5" required></textarea>
+                            <button type="submit">Gửi</button>
+                        </form>
+                    `;
+                    const contactForm = document.getElementById('contact-form');
+                    contactForm.addEventListener('submit', async (e) => {
+                        e.preventDefault();
+                        const fullName = document.getElementById('fullName').value;
+                        const songRequest = document.getElementById('songRequest').value;
+                        const message = document.getElementById('message').value;
+    
+                        try {
+                            const response = await fetch(`${BACKEND_URL}/contact`, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ fullName, songRequest, message })
+                            });
+                            if (!response.ok) {
+                                const errorData = await response.json();
+                                throw new Error(errorData.message || 'Gửi thất bại');
+                            }
+                            const data = await response.json();
+                            alert(data.message);
+                            contactForm.reset();
+                        } catch (error) {
+                            console.error('Contact error:', error);
+                            alert('Lỗi: ' + error.message);
+                        }
+                    });
+                    break;
+    
+                case 'favorites':
+                    targetSection.className = 'favorites';
+                    targetSection.innerHTML = `
+                        <h2>Danh sách yêu thích</h2>
+                        <button class="clear-favorites" onclick="clearFavorites()">Làm mới danh sách</button>
+                        <div class="favorites-container" id="favorites-container"></div>
+                    `;
+                    const favoritesContainer = document.getElementById('favorites-container');
+                    favoritesContainer.innerHTML = favorites.length
+                        ? favorites.map(song => `
+                            <div class="favorite-item">
+                                <img src="${song.cover || 'img/default_cover.png'}" alt="${song.name}">
+                                <div class="song-info">
+                                    <p class="song-title">${song.name}</p>
+                                    <p class="artist">${song.artist}</p>
+                                </div>
+                                <button class="remove-fav" onclick="removeFromFavorites(${JSON.stringify(song)})">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                                <button class="play-fav" onclick="playAudio(${JSON.stringify(song)})">
+                                    <i class="fa fa-play"></i>
+                                </button>
+                            </div>
+                        `).join('')
+                        : '<p>Chưa có bài hát nào trong danh sách yêu thích.</p>';
+                    break;
+            }
+    
+            targetSection.style.display = 'block';
+            setTimeout(() => {
+                document.getElementById('main-content').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
+        }
+    
+        // Load songs in Suggestions
+        function loadSongs() {
+            const grid = document.getElementById('suggestions-grid');
+            if (!grid) return;
+            grid.innerHTML = '';
+            let shuffledSongs = [...songs].sort(() => Math.random() - 0.5);
+            shuffledSongs.forEach(song => {
+                const songItem = document.createElement('div');
+                songItem.classList.add('song-item');
+                songItem.setAttribute('data-src', song.src);
+                songItem.innerHTML = `
+                    <img src="${song.cover}" alt="${song.name}">
+                    <div class="song-info">
+                        <p class="song-title">${song.name}</p>
+                        <p class="artist">${song.artist}</p>
+                    </div>
+                    <div class="play-icon">
+                        <i class="fa-solid fa-play"></i>
+                    </div>
+                    <button class="fav-btn" data-src="${song.src}" onclick="toggleFavorite(${JSON.stringify(song)}, this)">
+                        <i class="fa ${favorites.find(fav => fav.src === song.src) ? 'fa-heart' : 'fa-heart-o'}"></i>
+                    </button>
+                `;
+                songItem.addEventListener('click', () => playAudio(song));
+                songItem.querySelector('.play-icon').addEventListener('click', (event) => {
+                    event.stopPropagation();
+                    playAudio(song);
+                });
+                grid.appendChild(songItem);
+            });
+        }
+    
+        // Playlist details
+        function loadPlaylistDetails(playlistName) {
+            const mainContent = document.getElementById('main-content');
+            const allSections = mainContent.querySelectorAll('section');
+            allSections.forEach(sec => sec.style.display = 'none');
+    
+            let playlistSection = document.getElementById('playlist-details-section');
+            if (!playlistSection) {
+                playlistSection = document.createElement('section');
+                playlistSection.id = 'playlist-details-section';
+                playlistSection.className = 'playlist-details';
+                mainContent.appendChild(playlistSection);
+            }
+    
+            playlistSection.innerHTML = `
+                <h2>${playlistName}</h2>
+                <div class="playlist-songs-container"></div>
+            `;
+            const songsContainer = playlistSection.querySelector('.playlist-songs-container');
+            const playlistSongs = playlists[playlistName] || [];
+            playlistSongs.forEach(song => {
+                const songItem = document.createElement('div');
+                songItem.classList.add('song-item');
+                songItem.setAttribute('data-src', song.src);
+                songItem.innerHTML = `
+                    <img src="${song.cover || 'img/default_cover.png'}" alt="${song.name}">
+                    <div class="song-info">
+                        <div class="song-title">${song.name}</div>
+                        <div class="artist">${song.artist}</div>
+                    </div>
+                    <div class="play-icon"><i class="fa fa-play"></i></div>
+                    <button class="fav-btn" data-src="${song.src}" onclick="toggleFavorite(${JSON.stringify(song)}, this)">
+                        <i class="fa ${favorites.find(fav => fav.src === song.src) ? 'fa-heart' : 'fa-heart-o'}"></i>
+                    </button>
+                `;
+                songItem.addEventListener('click', () => playAudio(song));
+                songItem.querySelector('.play-icon').addEventListener('click', (event) => {
+                    event.stopPropagation();
+                    playAudio(song);
+                });
+                songsContainer.appendChild(songItem);
+            });
+    
+            playlistSection.style.display = 'block';
+            setTimeout(() => {
+                document.getElementById('main-content').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
+        }
+    
+        // Album details
+        function loadAlbumDetails(albumName) {
+            const mainContent = document.getElementById('main-content');
+            const allSections = mainContent.querySelectorAll('section');
+            allSections.forEach(sec => sec.style.display = 'none');
+    
+            let albumSection = document.getElementById('album-details-section');
+            if (!albumSection) {
+                albumSection = document.createElement('section');
+                albumSection.id = 'album-details-section';
+                albumSection.className = 'album-details';
+                mainContent.appendChild(albumSection);
+            }
+    
+            albumSection.innerHTML = `
+                <h2>${albumName}</h2>
+                <div class="album-songs-container"></div>
+            `;
+            const songsContainer = albumSection.querySelector('.album-songs-container');
+            const albumSongs = albums[albumName] || [];
+            albumSongs.forEach(song => {
+                const songItem = document.createElement('div');
+                songItem.classList.add('song-item');
+                songItem.setAttribute('data-src', song.src);
+                songItem.innerHTML = `
+                    <img src="${song.cover || 'img/default_cover.png'}" alt="${song.name}">
+                    <div class="song-info">
+                        <div class="song-title">${song.name}</div>
+                        <div class="artist">${song.artist}</div>
+                    </div>
+                    <div class="play-icon"><i class="fa fa-play"></i></div>
+                    <button class="fav-btn" data-src="${song.src}" onclick="toggleFavorite(${JSON.stringify(song)}, this)">
+                        <i class="fa ${favorites.find(fav => fav.src === song.src) ? 'fa-heart' : 'fa-heart-o'}"></i>
+                    </button>
+                `;
+                songItem.addEventListener('click', () => playAudio(song));
+                songItem.querySelector('.play-icon').addEventListener('click', (event) => {
+                    event.stopPropagation();
+                    playAudio(song);
+                });
+                songsContainer.appendChild(songItem);
+            });
+    
+            albumSection.style.display = 'block';
+            setTimeout(() => {
+                document.getElementById('main-content').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
+        }
+    
+        // Artist details
+        function loadArtistDetails(artist) {
+            const mainContent = document.getElementById('main-content');
+            const allSections = mainContent.querySelectorAll('section');
+            allSections.forEach(sec => sec.style.display = 'none');
+    
+            let artistSection = document.getElementById('artist-details-section');
+            if (!artistSection) {
+                artistSection = document.createElement('section');
+                artistSection.id = 'artist-details-section';
+                artistSection.className = 'artist-details';
+                mainContent.appendChild(artistSection);
+            }
+    
+            artistSection.innerHTML = `
+                <h2>${artist}</h2>
+                <div class="artist-songs-container"></div>
+            `;
+            const songsContainer = artistSection.querySelector('.artist-songs-container');
+    
+            const allSongs = [...songs, ...Object.values(playlists).flat(), ...Object.values(albums).flat()];
+            const uniqueSongs = Array.from(new Set(allSongs.map(song => JSON.stringify({ name: song.name, artist: song.artist }))))
+                .map(str => JSON.parse(str))
+                .map(({ name, artist }) => allSongs.find(song => song.name === name && song.artist === artist));
+    
+            const artistSongs = uniqueSongs.filter(song => song.artist.includes(artist));
+    
+            artistSongs.forEach(song => {
+                const songItem = document.createElement('div');
+                songItem.classList.add('song-item');
+                songItem.setAttribute('data-src', song.src);
+                songItem.innerHTML = `
+                    <img src="${song.cover || 'img/default_cover.png'}" alt="${song.name}">
+                    <div class="song-info">
+                        <div class="song-title">${song.name}</div>
+                        <div class="artist">${song.artist}</div>
+                    </div>
+                    <div class="play-icon"><i class="fa fa-play"></i></div>
+                    <button class="fav-btn" data-src="${song.src}" onclick="toggleFavorite(${JSON.stringify(song)}, this)">
+                        <i class="fa ${favorites.find(fav => fav.src === song.src) ? 'fa-heart' : 'fa-heart-o'}"></i>
+                    </button>
+                `;
+                songItem.addEventListener('click', () => playAudio(song));
+                songItem.querySelector('.play-icon').addEventListener('click', (event) => {
+                    event.stopPropagation();
+                    playAudio(song);
+                });
+                songsContainer.appendChild(songItem);
+            });
+    
+            artistSection.style.display = 'block';
+            setTimeout(() => {
+                document.getElementById('main-content').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
+        }
+    
+        // Cập nhật nút yêu thích trong music player khi phát bài hát
+        function updateMusicPlayerFavButton() {
+            const musicPlayerFavBtn = document.getElementById('music-player-fav-btn');
+            if (currentSong && favorites.find(fav => fav.src === currentSong.src)) {
+                musicPlayerFavBtn.classList.add('favorited');
+                musicPlayerFavBtn.innerHTML = '<i class="fa fa-heart"></i>';
+            } else {
+                musicPlayerFavBtn.classList.remove('favorited');
+                musicPlayerFavBtn.innerHTML = '<i class="fa fa-heart-o"></i>';
+            }
+            musicPlayerFavBtn.setAttribute('data-src', currentSong ? currentSong.src : '');
+        }
+    
+        // Gán sự kiện cho nút yêu thích trong music player
+        document.getElementById('music-player-fav-btn').addEventListener('click', () => {
+            if (currentSong) {
+                toggleFavorite(currentSong, document.getElementById('music-player-fav-btn'));
+            }
+        });
+    
+        // Cập nhật playAudio để lưu bài hát hiện tại
+        window.playAudio = function(song) {
+            const audioPlayer = document.getElementById('audio-player');
+            const playButton = document.querySelector('.play i');
+            const playerCover = document.getElementById('album-cover');
+            const playerTitle = document.getElementById('song-name');
+            const playerArtist = document.getElementById('artist-name');
+    
+            audioPlayer.src = song.src;
+            playerCover.src = song.cover || 'img/default_cover.png';
+            playerTitle.textContent = song.name;
+            playerArtist.textContent = song.artist;
+            currentSong = song; // Lưu bài hát hiện tại
+            updateMusicPlayerFavButton(); // Cập nhật nút yêu thích
+    
+            audioPlayer.play();
+            playButton.classList.replace('fa-play', 'fa-pause');
+            document.querySelector('.music-player').classList.remove('hidden');
+        };
+    
+        if (localStorage.getItem('token')) {
+            document.getElementById('overlay').style.display = 'none';
+            document.getElementById('app').classList.remove('content-locked');
+            loadSection('home');
+        } else {
+            document.getElementById('app').classList.add('content-locked');
+        }
+    </script>
+</body>
+
+</html>
